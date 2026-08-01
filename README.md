@@ -79,6 +79,17 @@ npm run dev
 
 Then open http://localhost:5173 in your browser.
 
+## MCP server
+
+The project also exposes a stdio MCP server for agent integrations:
+
+```bash
+uv run --directory /path/to/llm-council python -m backend.mcp_server
+```
+
+The `council_health` tool is a read-only, non-deliberating probe. The
+`council_query` tool runs the paid or locally configured three-stage council.
+
 ## Tech Stack
 
 - **Backend:** FastAPI (Python 3.10+), async httpx, OpenRouter API
