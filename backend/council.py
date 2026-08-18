@@ -23,7 +23,7 @@ async def stage1_collect_responses(user_query: str) -> List[Dict[str, Any]]:
     # Format results
     stage1_results = []
     for model, response in responses.items():
-        if response is not None:  # Only include successful responses
+        if response.get('content') is not None:  # Only include successful responses
             stage1_results.append({
                 "model": model,
                 "response": response.get('content', '')
@@ -100,7 +100,7 @@ Now provide your evaluation and ranking:"""
     # Format results
     stage2_results = []
     for model, response in responses.items():
-        if response is not None:
+        if response.get('content') is not None:
             full_text = response.get('content', '')
             parsed = parse_ranking_from_text(full_text)
             stage2_results.append({
@@ -161,11 +161,12 @@ Provide a clear, well-reasoned final answer that represents the council's collec
     # Query the chairman model
     response = await query_model(CHAIRMAN_MODEL, messages)
 
-    if response is None:
-        # Fallback if chairman fails
+    if response.get('content') is None:
+        # Fallback if chairman fails, with the real failure reason
+        error_detail = response.get('error', 'no response')
         return {
             "model": CHAIRMAN_MODEL,
-            "response": "Error: Unable to generate final synthesis."
+            "response": f"Error: Unable to generate final synthesis ({error_detail})."
         }
 
     return {
@@ -277,7 +278,7 @@ Title:"""
     # Use gemini-2.5-flash for title generation (fast and cheap)
     response = await query_model("google/gemini-2.5-flash", messages, timeout=30.0)
 
-    if response is None:
+    if response.get('content') is None:
         # Fallback to a generic title
         return "New Conversation"
 

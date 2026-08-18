@@ -1,5 +1,6 @@
 """OpenRouter API client for making LLM requests."""
 
+import sys
 import httpx
 from typing import List, Dict, Any, Optional
 from .config import LLM_API_KEY, LLM_API_URL
@@ -19,7 +20,8 @@ async def query_model(
         timeout: Request timeout in seconds
 
     Returns:
-        Response dict with 'content' and optional 'reasoning_details', or None if failed
+        On success: dict with 'content' and optional 'reasoning_details'.
+        On failure: dict with 'content': None and 'error': the failure detail.
     """
     headers = {
         "Authorization": f"Bearer {LLM_API_KEY}",
@@ -49,8 +51,10 @@ async def query_model(
             }
 
     except Exception as e:
-        print(f"Error querying model {model}: {e}")
-        return None
+        # stdout is the MCP stdio JSON-RPC wire; a stray print() there corrupts
+        # the protocol stream, so failures go to stderr instead.
+        print(f"Error querying model {model}: {e}", file=sys.stderr)
+        return {'content': None, 'error': str(e)}
 
 
 async def query_models_parallel(
