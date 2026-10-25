@@ -96,3 +96,7 @@ The `council_health` tool is a read-only, non-deliberating probe. The
 - **Frontend:** React + Vite, react-markdown for rendering
 - **Storage:** JSON files in `data/conversations/`
 - **Package Management:** uv for Python, npm for JavaScript
+
+## HATCH source adoption (#4318)
+
+The stdio server requires the declared MCP 1.x SDK. Validate a fresh environment with `uv sync --locked --python python3.13`; run the mocked tests with `uv run --python python3.13 --frozen --with pytest python -m pytest tests/test_mcp_server.py tests/test_openrouter.py tests/test_dependency_contract.py`. HATCH exports a clean pinned commit, builds the frozen environment outside Development, and runs `backend.mcp_server` from the installed tree. Development checkouts are not installed MCP runtimes.
