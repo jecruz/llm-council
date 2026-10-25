@@ -99,4 +99,6 @@ The `council_health` tool is a read-only, non-deliberating probe. The
 
 ## HATCH source adoption (#4318)
 
-The stdio server requires the declared MCP 1.x SDK. Validate a fresh environment with `uv sync --locked --python python3.13`; run the mocked tests with `uv run --python python3.13 --frozen --with pytest python -m pytest tests/test_mcp_server.py tests/test_openrouter.py tests/test_dependency_contract.py`. HATCH exports a clean pinned commit, builds the frozen environment outside Development, and runs `backend.mcp_server` from the installed tree. Development checkouts are not installed MCP runtimes.
+The stdio server requires the declared MCP 1.x SDK. Validate a fresh environment with `uv sync --locked --python python3.13`; run the mocked tests with `uv run --python python3.13 --frozen --with pytest --with tomli --with packaging python -m pytest tests/test_mcp_server.py tests/test_openrouter.py tests/test_dependency_contract.py`. HATCH exports a clean pinned commit, builds the frozen environment outside Development, and runs `backend.mcp_server` from the installed tree. Development checkouts are not installed MCP runtimes.
+
+Run the same mocked suite with `--python python3.10` to cover the declared Python floor and its lock branch. Both Python 3.10 and 3.13 passed six focused tests for #4318.
