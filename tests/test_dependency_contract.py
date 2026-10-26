@@ -15,3 +15,14 @@ def test_mcp_dependency_is_bounded_to_supported_major():
     requirement = next(Requirement(dep) for dep in project['dependencies'] if Requirement(dep).name == 'mcp')
     assert requirement.marker is None and requirement.url is None and not requirement.extras
     assert {(spec.operator,spec.version) for spec in requirement.specifier} == {('>=','1.0.0'),('<','2')}
+
+
+def test_noneditable_backend_import_from_unrelated_cwd(tmp_path):
+    """The installed wheel, rather than source cwd, supplies the MCP module."""
+    import subprocess
+    import sys
+    result=subprocess.run([sys.executable,'-I','-c','import backend.mcp_server; print(backend.mcp_server.__file__)'],
+        cwd=tmp_path,capture_output=True,text=True,check=True)
+    origin=Path(result.stdout.strip())
+    assert origin.is_relative_to(Path(sys.prefix))
+    assert 'site-packages' in origin.parts

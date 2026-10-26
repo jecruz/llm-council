@@ -99,6 +99,12 @@ The `council_health` tool is a read-only, non-deliberating probe. The
 
 ## HATCH source adoption (#4318)
 
-The stdio server requires the declared MCP 1.x SDK. Validate a fresh environment with `uv sync --locked --python python3.13`; run the mocked tests with `uv run --python python3.13 --frozen --group test python -m pytest tests/test_mcp_server.py tests/test_openrouter.py tests/test_dependency_contract.py`. HATCH exports a clean pinned commit, builds the frozen environment outside Development, and runs `backend.mcp_server` from the installed tree. Development checkouts are not installed MCP runtimes.
+The stdio server requires the declared MCP 1.x SDK. Validate a fresh environment with `uv sync --locked --python python3.13`; run the mocked tests with `uv run --python python3.13 --no-editable --frozen --group test python -m pytest tests/test_mcp_server.py tests/test_openrouter.py tests/test_dependency_contract.py`. HATCH exports a clean pinned commit, builds the frozen environment outside Development, and runs `backend.mcp_server` from the installed tree. Development checkouts are not installed MCP runtimes.
 
-Run the same mocked suite with `--python python3.10` to cover the declared Python floor and its lock branch. Both Python 3.10 and 3.13 passed six focused tests for #4318.
+Run the same mocked suite with `--python python3.10` to cover the declared Python floor and its lock branch. Both Python 3.10 and 3.13 passed seven focused tests for #4318.
+
+## Installed package (#4318)
+
+The Hatchling wheel includes `backend`. Frozen non-editable installs must resolve
+`backend.mcp_server` from the installed environment when launched from an unrelated
+working directory. Source-directory imports are not installation evidence.
